@@ -1,0 +1,30 @@
+version: '1'
+
+services:
+  morg4n-users:
+    build: morg4n-users
+    mem_limit: 512m
+    ports:
+      - "5000:5000"
+    environment:
+      SERVER_PORT: 5000
+      DB_URL: jdbc:mysql://users_app:3306/morgan_users?createDatabaseIfNotExist=true&serverTimezone=UTC
+      DB_USER_NAME: root
+      DB_PASSWORD: mysql
+    restart: always
+    depends_on:
+      users_app:
+          condition: service_healthy
+  users_app:
+    image: mysql:8.0.33 
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql
+      MYSQL_PASSWORD: mysql
+      MYSQL_DATABASE: morgan_users
+    restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 10
