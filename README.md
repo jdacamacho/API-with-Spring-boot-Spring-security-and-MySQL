@@ -31,7 +31,7 @@ Tecnologies:
    - Model Mapper
 3. MySQL: 8.0.33 
 
-User to test de application:   
+User to test the application:   
 username: admin   
 password: admin   
 
