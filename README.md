@@ -31,6 +31,10 @@ Tecnologies:
    - Model Mapper
 3. MySQL: 8.0.33 
 
+User to test de application:
+username: admin
+password: admin
+
 Julian Camacho Erazo <jdacamachoe@gmail.com>  
 Software Developer  
 Lover of open source
