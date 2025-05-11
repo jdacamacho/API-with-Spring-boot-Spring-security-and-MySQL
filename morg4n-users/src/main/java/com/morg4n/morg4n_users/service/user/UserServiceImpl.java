@@ -1,27 +1,27 @@
-package com.morg4n.morg4n_users.service;
+package com.morg4n.morg4n_users.service.user;
 
 import com.morg4n.morg4n_users.model.User;
 import com.morg4n.morg4n_users.model.UserLight;
 import com.morg4n.morg4n_users.persistence.entities.UserEntity;
 import com.morg4n.morg4n_users.persistence.repositories.UserRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author Julian David Camacho Erazo (Morg4n) {@literal <jdacamachoe@gmail.com>}
  */
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements IUserService {
     private final UserRepository repository;
     private final ModelMapper mapper;
-
-    public UserServiceImpl(UserRepository repository, ModelMapper mapper){
-        this.repository = repository;
-        this.mapper = mapper;
-    }
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public List<UserLight> findAll() {
@@ -32,20 +32,28 @@ public class UserServiceImpl implements IUserService {
     @Override
     public User findById(long id) throws Exception {
         UserEntity data = repository.findById(id)
-                .orElseThrow(() -> new Exception(String.format("Entity with ID %s does not exist.", id)));
+                .orElseThrow(() -> {
+                    log.error(String.format("Entity with ID %s does not exist.", id));
+                    return new Exception(String.format("Entity with ID %s does not exist.", id));
+                });
         return mapper.map(data, User.class);
     }
 
     @Override
     public User save(User user) {
+        String password = user.getPassword();
+        user.setPassword(passwordEncoder.encode(password));
         UserEntity data = mapper.map(user, UserEntity.class);
         return mapper.map(repository.save(data), User.class);
     }
 
     @Override
     public User update(long id, UserLight user) throws Exception {
-        final UserEntity data = repository.findById(id)
-                .orElseThrow(() -> new Exception(String.format("Entity with ID %s does not exist.", id)));
+         UserEntity data = repository.findById(id)
+                .orElseThrow(() -> {
+                    log.error(String.format("Entity with ID %s does not exist.", id));
+                    return new Exception(String.format("Entity with ID %s does not exist.", id));
+                });
         data.setName(user.getName());
         return mapper.map(repository.save(data), User.class);
     }
@@ -53,7 +61,10 @@ public class UserServiceImpl implements IUserService {
     @Override
     public boolean delete(long id) throws Exception {
         UserEntity data = repository.findById(id)
-                .orElseThrow(() -> new Exception(String.format("Entity with ID %s does not exist.", id)));
+                .orElseThrow(() -> {
+                    log.error(String.format("Entity with ID %s does not exist.", id));
+                    return new Exception(String.format("Entity with ID %s does not exist.", id));
+                });
         repository.delete(data);
         return true;
     }
@@ -61,13 +72,17 @@ public class UserServiceImpl implements IUserService {
     @Override
     public User changePassword(long id, String currentPassword, String newPassword) throws  Exception{
         UserEntity data = repository.findById(id)
-                .orElseThrow(() -> new Exception(String.format("Entity with ID %s does not exist.", id)));
+                .orElseThrow(() -> {
+                    log.error(String.format("Entity with ID %s does not exist.", id));
+                    return new Exception(String.format("Entity with ID %s does not exist.", id));
+                });
 
-        if(data.getPassword().equals(currentPassword))
-            data.setPassword(newPassword);
-        else
-            throw  new Exception("password incorrect.");
+        if (!passwordEncoder.matches(currentPassword, data.getPassword())) {
+            log.error("password incorrect.");
+            throw new Exception("password incorrect.");
+        }
 
+        data.setPassword(passwordEncoder.encode(newPassword));
         return mapper.map(repository.save(data), User.class);
     }
 }

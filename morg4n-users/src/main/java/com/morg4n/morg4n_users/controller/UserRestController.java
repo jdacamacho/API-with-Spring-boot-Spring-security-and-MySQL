@@ -2,7 +2,7 @@ package com.morg4n.morg4n_users.controller;
 
 import com.morg4n.morg4n_users.model.User;
 import com.morg4n.morg4n_users.model.UserLight;
-import com.morg4n.morg4n_users.service.IUserService;
+import com.morg4n.morg4n_users.service.user.IUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -19,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/users/")
 @RequiredArgsConstructor
-@Tag(name = "Users", description = "User management APIs")
+@Tag(name = "Users", description = "User management API")
 public class UserRestController {
     private final IUserService service;
 

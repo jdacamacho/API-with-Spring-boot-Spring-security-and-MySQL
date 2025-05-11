@@ -1,4 +1,4 @@
-package com.morg4n.morg4n_users.service;
+package com.morg4n.morg4n_users.service.user;
 
 import com.morg4n.morg4n_users.model.User;
 import com.morg4n.morg4n_users.model.UserLight;
