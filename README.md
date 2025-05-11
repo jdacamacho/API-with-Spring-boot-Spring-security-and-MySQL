@@ -1,6 +1,6 @@
-# API to manage users without authentication.
+# API to manage users with authentication (Spring Security).
 
-Api development by Morg4n, an easy example of how to use spring boot with a MySQL database.
+Api development by Morg4n, an easy example of how to use spring boot with Spring Security and a MySQL database.
 
 1. Clone the repository
    ```bash
